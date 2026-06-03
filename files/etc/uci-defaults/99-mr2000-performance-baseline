@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Keep the hand-tuned router baseline inside the image so reflashes do not lose it.
+uci -q batch <<'EOF'
+set dropbear.main.Interface='lan'
+
+delete uhttpd.main.listen_http
+add_list uhttpd.main.listen_http='192.168.1.1:80'
+delete uhttpd.main.listen_https
+add_list uhttpd.main.listen_https='192.168.1.1:443'
+
+set network.globals='globals'
+set network.globals.packet_steering='1'
+set network.wan.mtu='1430'
+
+set firewall.@defaults[0].flow_offloading='0'
+set firewall.@defaults[0].flow_offloading_hw='0'
+
+delete sqm.eth1
+delete sqm.wan
+set sqm.wan='queue'
+set sqm.wan.enabled='1'
+set sqm.wan.interface='wan'
+set sqm.wan.download='35000'
+set sqm.wan.upload='7500'
+set sqm.wan.qdisc='cake'
+set sqm.wan.script='piece_of_cake.qos'
+set sqm.wan.linklayer='none'
+set sqm.wan.debug_logging='0'
+set sqm.wan.verbosity='5'
+
+commit dropbear
+commit uhttpd
+commit network
+commit firewall
+commit sqm
+EOF
+
+/etc/init.d/sqm enable 2>/dev/null || true
+/etc/init.d/dropbear enable 2>/dev/null || true
+/etc/init.d/uhttpd enable 2>/dev/null || true
+
+exit 0

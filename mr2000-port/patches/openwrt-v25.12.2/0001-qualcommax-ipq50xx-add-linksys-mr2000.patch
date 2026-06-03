@@ -1,0 +1,490 @@
+diff --git a/package/firmware/ipq-wifi/Makefile b/package/firmware/ipq-wifi/Makefile
+index d447eef..5408300 100644
+--- a/package/firmware/ipq-wifi/Makefile
++++ b/package/firmware/ipq-wifi/Makefile
+@@ -47,6 +47,7 @@ ALLWIFIBOARDS:= \
+ 	ignitenet_ss-w2-ac2600 \
+ 	iodata_wn-dax3000gr \
+ 	linksys_homewrk \
++	linksys_mr2000 \
+ 	linksys_mr5500 \
+ 	linksys_mr6350 \
+ 	linksys_mr7350 \
+@@ -230,6 +231,7 @@ $(eval $(call generate-ipq-wifi-package,glinet_gl-b3000,GL.iNet GL-B3000))
+ $(eval $(call generate-ipq-wifi-package,ignitenet_ss-w2-ac2600,Ignitenet SS-W2-AC2600))
+ $(eval $(call generate-ipq-wifi-package,iodata_wn-dax3000gr,I-O DATA WN-DAX3000GR))
+ $(eval $(call generate-ipq-wifi-package,linksys_homewrk,Linksys HomeWRK))
++$(eval $(call generate-ipq-wifi-package,linksys_mr2000,Linksys MR2000))
+ $(eval $(call generate-ipq-wifi-package,linksys_mr5500,Linksys MR5500))
+ $(eval $(call generate-ipq-wifi-package,linksys_mr6350,Linksys MR6350))
+ $(eval $(call generate-ipq-wifi-package,linksys_mr7350,Linksys MR7350))
+diff --git a/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq5018-mr2000.dts b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq5018-mr2000.dts
+new file mode 100644
+index 0000000..a456b25
+--- /dev/null
++++ b/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq5018-mr2000.dts
+@@ -0,0 +1,252 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++/dts-v1/;
++
++#include "ipq5018.dtsi"
++#include "ipq5018-mx-base.dtsi"
++#include "ipq5018-qcn6122.dtsi"
++
++/ {
++	model = "Linksys MR2000";
++	compatible = "linksys,mr2000", "qcom,ipq5018";
++
++	aliases {
++		label-mac-device = &dp1;
++	};
++
++	chosen {
++		bootargs-append = " root=/dev/ubiblock0_0 rootwait coherent_pool=2M";
++		stdout-path = "serial0:115200n8";
++	};
++
++	keys {
++		wps-button {
++			gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
++		};
++
++		reset-button {
++			gpios = <&tlmm 26 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	leds {
++		green {
++			pwms = <&pwm 1 1250000>;
++		};
++
++		blue {
++			pwms = <&pwm 0 1250000>;
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		usb {
++			color = <LED_COLOR_ID_BLUE>;
++			function = LED_FUNCTION_USB;
++			gpios = <&tlmm 17 GPIO_ACTIVE_LOW>;
++			trigger-sources = <&usb_port1>;
++			linux,default-trigger = "usbport";
++		};
++	};
++};
++
++&qpic_nand {
++	nand@0 {
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			/delete-node/ partition-devinfo;
++
++			partition@0 {
++				label = "0:sbl1";
++				reg = <0x0 0x80000>;
++				read-only;
++			};
++
++			partition@80000 {
++				label = "0:mibib";
++				reg = <0x80000 0x80000>;
++				read-only;
++			};
++
++			partition@100000 {
++				label = "0:qsee";
++				reg = <0x100000 0x100000>;
++				read-only;
++			};
++
++			partition@200000 {
++				label = "0:devcfg";
++				reg = <0x200000 0x40000>;
++				read-only;
++			};
++
++			partition@240000 {
++				label = "0:cdt";
++				reg = <0x240000 0x40000>;
++				read-only;
++			};
++
++			partition@280000 {
++				label = "0:appsblenv";
++				reg = <0x280000 0x80000>;
++			};
++
++			partition@300000 {
++				label = "0:appsbl";
++				reg = <0x300000 0x140000>;
++				read-only;
++			};
++
++			partition@440000 {
++				label = "0:art";
++				reg = <0x440000 0x100000>;
++				read-only;
++			};
++
++			partition@540000 {
++				label = "0:training";
++				reg = <0x540000 0x80000>;
++				read-only;
++			};
++
++			partition@5c0000 {
++				label = "u_env";
++				reg = <0x5c0000 0x80000>;
++			};
++
++			partition@640000 {
++				label = "s_env";
++				reg = <0x640000 0x40000>;
++			};
++
++			partition@680000 {
++				label = "devinfo";
++				reg = <0x680000 0x40000>;
++				read-only;
++
++				nvmem-layout {
++					compatible = "ascii-eq-delim-env";
++					#address-cells = <1>;
++					#size-cells = <1>;
++
++					hw_mac_addr: hw_mac_addr {
++						compatible = "mac-base";
++						#nvmem-cell-cells = <1>;
++					};
++				};
++			};
++
++			partition@6c0000 {
++				label = "kernel";
++				reg = <0x6c0000 0x5200000>;
++			};
++
++			partition@ec0000 {
++				label = "rootfs";
++				reg = <0xec0000 0x4a00000>;
++			};
++
++			partition@58c0000 {
++				label = "alt_kernel";
++				reg = <0x58c0000 0x5200000>;
++			};
++
++			partition@60c0000 {
++				label = "alt_rootfs";
++				reg = <0x60c0000 0x4a00000>;
++			};
++
++			partition@aac0000 {
++				label = "sysdiag";
++				reg = <0xaac0000 0x200000>;
++				read-only;
++			};
++
++			partition@acc0000 {
++				label = "syscfg";
++				reg = <0xacc0000 0x4400000>;
++			};
++		};
++	};
++};
++
++/*
++ * The stock MR2000 DTB exposes the IPQ5018 GE PHY as the WAN path and
++ * a QCA8337 on MDIO1 as the four-port LAN switch.
++ */
++&switch {
++	status = "okay";
++
++	switch_mac_mode = <MAC_MODE_SGMII_CHANNEL0>;
++
++	qcom,port_phyinfo {
++		// MAC0 -> GE Phy -> WAN
++		port@0 {
++			port_id = <1>;
++			mdiobus = <&mdio0>;
++			phy_address = <7>;
++		};
++
++		// MAC1 ---SGMII---> QCA8337 SerDes
++		port@1 {
++			port_id = <2>;
++			forced-speed = <1000>;
++			forced-duplex = <1>;
++		};
++	};
++};
++
++// MAC0 ---MDI---> IPQ5018 GE PHY
++&dp1 {
++	status = "okay";
++
++	label = "wan";
++	phy-handle = <&ge_phy>;
++	nvmem-cells = <&hw_mac_addr 0>;
++	nvmem-cell-names = "mac-address";
++};
++
++// MAC1 ---SGMII---> QCA8337 SerDes
++&dp2 {
++	status = "okay";
++
++	nvmem-cells = <&hw_mac_addr 1>;
++	nvmem-cell-names = "mac-address";
++
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&mdio0 {
++	status = "okay";
++};
++
++&ge_phy {
++	qcom,dac-preset-short-cable;
++};
++
++&mdio1 {
++	status = "okay";
++
++	pinctrl-0 = <&mdio1_pins>;
++	pinctrl-names = "default";
++	reset-gpios = <&tlmm 39 GPIO_ACTIVE_LOW>;
++
++	// QCA8337 Phy0 -> LAN1
++	qca8337_0: ethernet-phy@0 {
++		reg = <0>;
++	};
++
++	// QCA8337 Phy1 -> LAN2
++	qca8337_1: ethernet-phy@1 {
++		reg = <1>;
++	};
++
++	// QCA8337 Phy2 -> LAN3
++	qca8337_2: ethernet-phy@2 {
++		reg = <2>;
++	};
++
++	// QCA8337 Phy3 -> LAN4
++	qca8337_3: ethernet-phy@3 {
++		reg = <3>;
++	};
++
++	switch1: ethernet-switch@17 {
++		compatible = "qca,qca8337";
++		reg = <17>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@1 {
++				reg = <1>;
++				label = "lan1";
++				phy-handle = <&qca8337_0>;
++			};
++
++			port@2 {
++				reg = <2>;
++				label = "lan2";
++				phy-handle = <&qca8337_1>;
++			};
++
++			port@3 {
++				reg = <3>;
++				label = "lan3";
++				phy-handle = <&qca8337_2>;
++			};
++
++			port@4 {
++				reg = <4>;
++				label = "lan4";
++				phy-handle = <&qca8337_3>;
++			};
++
++			port@6 {
++				reg = <6>;
++				label = "cpu";
++				phy-mode = "sgmii";
++				ethernet = <&dp2>;
++				qca,sgmii-enable-pll;
++
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++		};
++	};
++};
++
++&usbphy0 {
++	status = "okay";
++};
++
++&usb {
++	status = "okay";
++};
++
++&usb_dwc {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	dr_mode = "host";
++
++	usb_port1: port@1 {
++		reg = <1>;
++		#trigger-source-cells = <0>;
++	};
++};
++
++&tlmm {
++	button_pins: button-state {
++		pins = "gpio26", "gpio38";
++	};
++};
++
++&q6_region {
++	reg = <0x0 0x4b000000 0x0 0x5400000>;
++};
++
++&q6v5_wcss {
++	boot-args = <
++			/*       type: */	0x1	/* PCIE0 */
++			/*     length: */	4
++			/*     UPD ID: */	3
++			/* reset GPIO: */	15
++			/*   reserved: */	0 0
++
++			/*       type: */	0x2	/* PCIE1 */
++			/*     length: */	4
++			/*     UPD ID: */	2
++			/* reset GPIO: */	18
++			/*   reserved: */	0 0>;
++};
++
++&wifi {
++	status = "okay";
++
++	qcom,rproc = <&q6_wcss_pd1>;
++	qcom,userpd-subsys-name = "q6v5_wcss_userpd1";
++	qcom,ath11k-calibration-variant = "Linksys-MR2000";
++	qcom,ath11k-fw-memory-mode = <1>;
++	qcom,bdf-addr = <0x4c400000>;
++};
++
++&wifi1 {
++	status = "okay";
++
++	qcom,rproc = <&q6_wcss_pd3>;
++	qcom,userpd-subsys-name = "q6v5_wcss_userpd3";
++	qcom,ath11k-calibration-variant = "Linksys-MR2000";
++	qcom,ath11k-fw-memory-mode = <1>;
++	qcom,bdf-addr = <0x4ed00000>;
++	qcom,m3-dump-addr = <0x4fd00000>;
++};
+diff --git a/target/linux/qualcommax/image/ipq50xx.mk b/target/linux/qualcommax/image/ipq50xx.mk
+index 7fab522..ab4ed43 100644
+--- a/target/linux/qualcommax/image/ipq50xx.mk
++++ b/target/linux/qualcommax/image/ipq50xx.mk
+@@ -104,6 +104,16 @@ define Device/linksys_ipq50xx_mx_base
+ 	IMAGE/factory.bin := append-kernel | pad-to $$$$(KERNEL_SIZE) | append-ubi | linksys-image type=$$$$(DEVICE_MODEL)
+ endef
+ 
++define Device/linksys_mr2000
++	$(call Device/linksys_ipq50xx_mx_base)
++	DEVICE_MODEL := MR2000
++	DEVICE_DTS_CONFIG := config@mp03.5-c1
++	DEVICE_PACKAGES := ath11k-firmware-ipq5018-qcn6122 \
++		ipq-wifi-linksys_mr2000 \
++		kmod-usb-ledtrig-usbport
++endef
++TARGET_DEVICES += linksys_mr2000
++
+ define Device/linksys_mr5500
+ 	$(call Device/linksys_ipq50xx_mx_base)
+ 	DEVICE_MODEL := MR5500
+diff --git a/target/linux/qualcommax/ipq50xx/base-files/etc/board.d/02_network b/target/linux/qualcommax/ipq50xx/base-files/etc/board.d/02_network
+index 09a68d7..d8fedc7 100644
+--- a/target/linux/qualcommax/ipq50xx/base-files/etc/board.d/02_network
++++ b/target/linux/qualcommax/ipq50xx/base-files/etc/board.d/02_network
+@@ -9,6 +9,7 @@ ipq50xx_setup_interfaces()
+ 	case $board in
+ 	elecom,wrc-x3000gs2|\
+ 	iodata,wn-dax3000gr|\
++	linksys,mr2000|\
+ 	linksys,mr5500|\
+ 	zyxel,scr50axe)
+ 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" "wan"
+diff --git a/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata b/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
+index d4a913b..aa869e5 100644
+--- a/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
++++ b/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
+@@ -22,6 +22,7 @@ case "$FIRMWARE" in
+ 		ath11k_patch_mac $(macaddr_add $(get_mac_label_dt) 3) 0
+ 		ath11k_set_macflag
+ 		;;
++	linksys,mr2000|\
+ 	linksys,mr5500|\
+ 	linksys,mx2000|\
+ 	linksys,mx5500|\
+@@ -67,6 +68,7 @@ case "$FIRMWARE" in
+ 		ath11k_patch_mac $(macaddr_add $(get_mac_label_dt) 4) 0
+ 		ath11k_set_macflag
+ 		;;
++	linksys,mr2000|\
+ 	linksys,mx2000)
+ 		caldata_extract "0:art" 0x26800 0x20000
+ 		label_mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+diff --git a/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/ieee80211/05-wifi-migrate b/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/ieee80211/05-wifi-migrate
+index d3460db..b9b6267 100644
+--- a/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/ieee80211/05-wifi-migrate
++++ b/target/linux/qualcommax/ipq50xx/base-files/etc/hotplug.d/ieee80211/05-wifi-migrate
+@@ -51,6 +51,7 @@ case "$(board_name)" in
+ elecom,wrc-x3000gs2|\
+ glinet,gl-b3000|\
+ iodata,wn-dax3000gr|\
++linksys,mr2000|\
+ linksys,mx2000|\
+ yuncore,ax830)
+ 	migrate_radio 'platform/soc@0/b00a040.wifi1' 'platform/soc@0/b00a040.wifi'
+diff --git a/target/linux/qualcommax/ipq50xx/base-files/etc/init.d/bootcount b/target/linux/qualcommax/ipq50xx/base-files/etc/init.d/bootcount
+index efde13d..53c1093 100755
+--- a/target/linux/qualcommax/ipq50xx/base-files/etc/init.d/bootcount
++++ b/target/linux/qualcommax/ipq50xx/base-files/etc/init.d/bootcount
+@@ -4,6 +4,7 @@ START=99
+ 
+ boot() {
+ 	case $(board_name) in
++	linksys,mr2000|\
+ 	linksys,mr5500|\
+ 	linksys,mx2000|\
+ 	linksys,mx5500|\
+diff --git a/target/linux/qualcommax/ipq50xx/base-files/lib/upgrade/platform.sh b/target/linux/qualcommax/ipq50xx/base-files/lib/upgrade/platform.sh
+index c6e8d0f..b8fc747 100644
+--- a/target/linux/qualcommax/ipq50xx/base-files/lib/upgrade/platform.sh
++++ b/target/linux/qualcommax/ipq50xx/base-files/lib/upgrade/platform.sh
+@@ -198,6 +198,7 @@ platform_do_upgrade() {
+ 	glinet,gl-b3000)
+ 		glinet_do_upgrade "$1"
+ 		;;
++	linksys,mr2000|\
+ 	linksys,mr5500|\
+ 	linksys,mx2000|\
+ 	linksys,mx5500|\

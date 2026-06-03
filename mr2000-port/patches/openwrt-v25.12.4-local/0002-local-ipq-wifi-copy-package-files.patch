@@ -1,0 +1,16 @@
+diff --git a/package/firmware/ipq-wifi/Makefile b/package/firmware/ipq-wifi/Makefile
+index 5408300..8d94f08 100644
+--- a/package/firmware/ipq-wifi/Makefile
++++ b/package/firmware/ipq-wifi/Makefile
+@@ -12,6 +12,11 @@ PKG_FLAGS:=nonshared
+ 
+ include $(INCLUDE_DIR)/package.mk
+ 
++define Build/Prepare
++	$(call Build/Prepare/Default)
++	$(CP) ./files/* $(PKG_BUILD_DIR)/
++endef
++
+ define Build/Compile
+ endef
+ 

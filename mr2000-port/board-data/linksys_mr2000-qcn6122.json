@@ -1,0 +1,12 @@
+[
+  {
+    "board": [
+      {
+        "names": [
+          "bus=ahb,qmi-chip-id=0,qmi-board-id=255,variant=Linksys-MR2000"
+        ],
+        "data": "src/bdwlan-qcn6122-fcc.bin"
+      }
+    ]
+  }
+]
