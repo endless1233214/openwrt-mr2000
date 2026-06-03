@@ -9,6 +9,8 @@ PATCH="$ROOT/mr2000-port/patches/openwrt-v25.12.4-local/0001-local-qualcommax-ip
 PATCH_COPY_FILES="$ROOT/mr2000-port/patches/openwrt-v25.12.4-local/0002-local-ipq-wifi-copy-package-files.patch"
 FILES_DIR="$ROOT/files"
 
+export FORCE_UNSAFE_CONFIGURE="${FORCE_UNSAFE_CONFIGURE:-1}"
+
 mkdir -p "$OUT_DIR"
 
 if [ ! -d "$BUILD_DIR/.git" ]; then
