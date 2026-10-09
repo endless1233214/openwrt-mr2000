@@ -7,6 +7,7 @@ OUT_DIR="${OUT_DIR:-$ROOT/build-output-25.12.5}"
 OPENWRT_BRANCH="${OPENWRT_BRANCH:-v25.12.5}"
 PATCH="$ROOT/mr2000-port/patches/openwrt-v25.12.5-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch"
 PATCH_COPY_FILES="$ROOT/mr2000-port/patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch"
+PATCH_UBOOT_ENV="$ROOT/mr2000-port/patches/openwrt-v25.12.5-local/0003-local-uboot-envtools-add-mr2000.patch"
 FILES_DIR="$ROOT/files"
 
 export FORCE_UNSAFE_CONFIGURE="${FORCE_UNSAFE_CONFIGURE:-1}"
@@ -31,6 +32,10 @@ fi
 
 if ! grep -Fq '$(CP) ./files/* $(PKG_BUILD_DIR)/' package/firmware/ipq-wifi/Makefile; then
   git apply "$PATCH_COPY_FILES"
+fi
+
+if ! grep -Fq 'linksys,mr2000|\' package/boot/uboot-tools/uboot-envtools/files/qualcommax_ipq50xx; then
+  git apply "$PATCH_UBOOT_ENV"
 fi
 
 ./scripts/feeds update -a

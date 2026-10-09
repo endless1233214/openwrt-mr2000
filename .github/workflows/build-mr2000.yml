@@ -34,6 +34,7 @@ jobs:
           cd openwrt
           git apply ../mr2000-port/patches/openwrt-v25.12.5-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch
           git apply ../mr2000-port/patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch
+          git apply ../mr2000-port/patches/openwrt-v25.12.5-local/0003-local-uboot-envtools-add-mr2000.patch
 
       - name: Update feeds
         run: |

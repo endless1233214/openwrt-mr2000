@@ -21,6 +21,9 @@ blind web UI flashing or unattended sysupgrade.
 - `patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch`
   - Lets the local board-data files be copied into the generated `ipq-wifi`
     package during the build.
+- `patches/openwrt-v25.12.5-local/0003-local-uboot-envtools-add-mr2000.patch`
+  - Registers the MR2000 U-Boot environment so dual-slot sysupgrade can read
+    and update `boot_part`, `boot_part_ready`, and `auto_recovery` safely.
 - `patches/openwrt-v25.12.2/0001-qualcommax-ipq50xx-add-linksys-mr2000.patch`
   - Upstream-style OpenWrt patch.
   - Expects board data to exist in the `firmware/qca-wireless` source package.
@@ -163,6 +166,7 @@ cd openwrt
 git checkout v25.12.5
 git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.5-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch
 git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch
+git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.5-local/0003-local-uboot-envtools-add-mr2000.patch
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 ```
