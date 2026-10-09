@@ -2,12 +2,12 @@
 
 Status: first-pass port files are drafted, serial/TFTP initramfs boot works, and
 the router has been flashed successfully through the factory-slot U-Boot/TFTP
-path. The build kit is now aimed at OpenWrt 25.12.4. This is still not ready for
+path. The build kit is now aimed at OpenWrt 25.12.5. This is still not ready for
 blind web UI flashing or unattended sysupgrade.
 
 ## What Is In This Folder
 
-- `../build-output/`
+- `../build-output-25.12.5/`
   - Local Docker build artifacts for the MR2000.
   - First file to test: `openwrt-qualcommax-ipq50xx-linksys_mr2000-initramfs-uImage.itb`.
   - Do not flash `factory.bin` or `sysupgrade.bin` until initramfs boot succeeds.
@@ -15,10 +15,10 @@ blind web UI flashing or unattended sysupgrade.
   - Exact first-boot checklist and TFTP/U-Boot commands.
 - `../MR2000_FLASH_TEST.md`
   - Controlled first flash procedure. Uses serial/U-Boot, flashes the inactive primary slot only, and preserves the currently active stock slot.
-- `patches/openwrt-v25.12.4-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch`
+- `patches/openwrt-v25.12.5-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch`
   - Best patch for a local test build.
   - Includes the OpenWrt device support plus local `ipq-wifi/files/` board-data blobs.
-- `patches/openwrt-v25.12.4-local/0002-local-ipq-wifi-copy-package-files.patch`
+- `patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch`
   - Lets the local board-data files be copied into the generated `ipq-wifi`
     package during the build.
 - `patches/openwrt-v25.12.2/0001-qualcommax-ipq50xx-add-linksys-mr2000.patch`
@@ -160,9 +160,9 @@ Use Linux for the first build. The full OpenWrt source build is the right tool h
 ```sh
 git clone https://github.com/openwrt/openwrt.git
 cd openwrt
-git checkout v25.12.4
-git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.4-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch
-git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.4-local/0002-local-ipq-wifi-copy-package-files.patch
+git checkout v25.12.5
+git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.5-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch
+git apply /Users/endless/Desktop/Projects/OpenWRT-For-My-MR2000/mr2000-port/patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 ```

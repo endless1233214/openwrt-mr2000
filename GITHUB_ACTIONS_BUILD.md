@@ -49,9 +49,9 @@ git push -u origin main
 
 3. Open the repository on GitHub.
 4. Go to `Actions`.
-5. Select `Build MR2000 OpenWrt Images`.
+5. Select `Build MR2000 OpenWrt 25.12.5 Images`.
 6. Click `Run workflow`.
-7. Download the `mr2000-openwrt-images` artifact when it finishes.
+7. Download the `mr2000-openwrt-25.12.5-images` artifact when it finishes.
 
 ## After Download
 

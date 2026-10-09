@@ -2,11 +2,11 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BUILD_DIR="${BUILD_DIR:-$ROOT/openwrt-build}"
-OUT_DIR="${OUT_DIR:-$ROOT/build-output}"
-OPENWRT_BRANCH="${OPENWRT_BRANCH:-v25.12.4}"
-PATCH="$ROOT/mr2000-port/patches/openwrt-v25.12.4-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch"
-PATCH_COPY_FILES="$ROOT/mr2000-port/patches/openwrt-v25.12.4-local/0002-local-ipq-wifi-copy-package-files.patch"
+BUILD_DIR="${BUILD_DIR:-$ROOT/openwrt-build-25.12.5}"
+OUT_DIR="${OUT_DIR:-$ROOT/build-output-25.12.5}"
+OPENWRT_BRANCH="${OPENWRT_BRANCH:-v25.12.5}"
+PATCH="$ROOT/mr2000-port/patches/openwrt-v25.12.5-local/0001-local-qualcommax-ipq50xx-add-linksys-mr2000.patch"
+PATCH_COPY_FILES="$ROOT/mr2000-port/patches/openwrt-v25.12.5-local/0002-local-ipq-wifi-copy-package-files.patch"
 FILES_DIR="$ROOT/files"
 
 export FORCE_UNSAFE_CONFIGURE="${FORCE_UNSAFE_CONFIGURE:-1}"
